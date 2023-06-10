@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-  origin: 'https://custom-tab.onrender.com/'
+  origin: 'https://custom-tab.onrender.com'
 }));
 app.use(express.json());
 
