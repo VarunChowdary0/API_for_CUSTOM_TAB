@@ -29,7 +29,12 @@ const UserTabSchema = new mongoose.Schema({
   unqid: String
 });
 const AppDataModel = mongoose.model('app_data', UserTabSchema);
-//----- functions ::
+
+const UsageCount_schema=new mongoose.Schema({
+  count : Number
+});
+const countModel=mongoose.model('UsageCount',UsageCount_schema);
+
 
 const CheckDupAccount=(unq_id_check)=>{
   
@@ -92,9 +97,21 @@ const CheckDupAccount=(unq_id_check)=>{
 
 
 //======================
-app.get('/',(req,res)=>{
-  res.status(200).json({'message':'SERVER ONLINE'});
-})
+app.get('/', async (req, res) => {
+  try {
+    const updatedCount = await countModel.findByIdAndUpdate(
+      '6488933da21b4d9a7625103c', // Replace with the actual ID of the document
+      { $inc: { count: 1 } }, // Increment the "count" field by 1
+      { new: true }
+    ).exec();
+
+    res.status(200).json({ 'message': 'SERVER ONLINE' });
+  } catch (err) {
+    console.error('Failed to increment the value:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 app.post('/api', (req, res) => {
   const AllData = req.body;
