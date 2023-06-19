@@ -5,7 +5,8 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-  origin: 'https://custom-tab.onrender.com'
+  //origin: 'http://localhost:3000'
+  origin:'https://custom-tab.onrender.com'
 }));
 app.use(express.json());
 
@@ -39,7 +40,11 @@ const countModel=mongoose.model('UsageCount',UsageCount_schema);
 const CheckDupAccount=(unq_id_check)=>{
   
 }
-
+const reportSechma=new mongoose.Schema({
+  unq_id : String,
+  report : String
+})
+const reportModel=mongoose.model("reports",reportSechma);
 // route to create an account ;; 
 // app.get('/newAccount', (req, res) => {
 //   const DataReceived = {
@@ -226,6 +231,23 @@ app.post('/authenticate',(req,res)=>{
         }
   })
     
+})
+app.post('/report',(req,res)=>{
+  const Report=req.body;
+  console.log(Report);
+  reportModel.find(Report)
+   .then(res_2=>{
+    if(res_2.length===0)
+    {
+      reportModel.create(Report);
+      res.status(200).json({'message':'reported'});
+    }
+    else
+    {
+      res.status(400).json({'message': 'Duplicate'});
+    }
+   })
+  
 })
 
 app.listen(1800, () => {
